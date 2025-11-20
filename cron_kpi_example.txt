@@ -1,0 +1,39 @@
+# ops/cron_kpi_example.txt
+# Example CRON jobs for running scorecards and maintenance jobs on an Ubuntu server.
+#
+# Pattern:
+# - One virtualenv per job folder under /var/cjobs
+# - Activate venv and run the corresponding Python script
+# - Log output to a local log file inside each job folder
+#
+# Note:
+# Current schedule: every Monday (day-of-week = 1).
+# Adjust frequency according to your needs.
+
+# ---------------------------------------------------------
+# SUCCESS SCORECARD
+# ---------------------------------------------------------
+# Every Monday at 06:00 — success-scorecard
+0 6 * * 1 /bin/bash -c 'cd /var/cjobs/success-scorecard && source venv/bin/activate && /var/cjobs/success-scorecard/venv/bin/python run_success_scorecard.py >> cronjob.log 2>&1'
+
+# ---------------------------------------------------------
+# LEADERSHIP SCORECARD
+# ---------------------------------------------------------
+# Every Monday at 06:00 — leadership-scorecard
+0 6 * * 1 /bin/bash -c 'cd /var/cjobs/leadership-scorecard && source venv/bin/activate && /var/cjobs/leadership-scorecard/venv/bin/python run_leadership_scorecard.py >> cronjob.log 2>&1'
+
+# ---------------------------------------------------------
+# APPLICATIONS SCORECARD
+# ---------------------------------------------------------
+# Every Monday at 06:00 — applications-scorecard
+0 6 * * 1 /bin/bash -c 'cd /var/cjobs/applications-scorecard && source venv/bin/activate && /var/cjobs/applications-scorecard/venv/bin/python run_applications_scorecard.py >> cronjob.log 2>&1'
+
+# ---------------------------------------------------------
+# INSIDE-JOBS – MAINTENANCE TASKS
+# ---------------------------------------------------------
+
+# Every month on day 1 at 01:00 — export logs to CSV
+0 1 1 * * /bin/bash -c 'cd /var/cjobs/inside-jobs && source venv/bin/activate && /var/cjobs/inside-jobs/venv/bin/python exportar_logs_csv.py >> exportar_logs_csv.log 2>&1'
+
+# Every month on day 1 at 02:00 — clean logs
+0 2 1 * * /bin/bash -c 'cd /var/cjobs/inside-jobs && source venv/bin/activate && /var/cjobs/inside-jobs/venv/bin/python limpiar_logs.py >> cronjob.log 2>&1'
